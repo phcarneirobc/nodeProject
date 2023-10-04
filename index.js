@@ -1,26 +1,39 @@
-var express = require('express');
-var app = express();
-var fs = require("fs");
+const express = require("express"); //importa o mÃ³dulo express neste arquivo
+const app = express(); //iniciando o express
 
-app.get('/listUsers', function (req, res) {
-   fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-      console.log( data );
-      res.end( data );
-   });
+//criando a rota inicial
+app.get("/", function(req,res){
+    res.send("<h1>Bem vindo ao meu site!</h1>");
 })
 
-app.get('/listUser/:id', function (req, res) {
-    // First read existing users.
-    fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-       var users = JSON.parse( data );
-       var user = users["user" + req.params.id] 
-       console.log( user );
-       res.end( JSON.stringify(user));
-    });
- })
+//rota do cadastro de produtos
+app.get("/produtos", function(req,res){
+    res.send("<h1>Lista de Produtos!</h1>");
+})
 
-var server = app.listen(8081, function () {
-   var host = server.address().address
-   var port = server.address().port
-   console.log("Example app listening at http://%s:%s", host, port)
+//rota com parametro 
+app.get("/consulta/:parametro", function(req,res){
+    //req --> dados enviados pelo cliente
+    //res --> resposta enviada pelo servidor de volta ao cliente
+    res.send("retorno consulta:" + req.params.parametro);
+})
+
+//rota com parametro opcional
+app.get("/cadastro/:nome?", function(req,res){
+    //req --> dados enviados pelo cliente
+    var nome = req.params.nome;
+    if (nome){
+        res.send("<h1>produto " + nome + " criado!</h1>");
+    }else{
+        res.send("produto criado!");
+    }
+    
+})
+
+app.listen(process.env.PORT ?? 3000,function(erro){  // cria a aplicaÃ§Ã£o na porta 4000
+    if (erro){
+        console.log("Erro ao Iniciar.");
+    }else{
+        console.log("Servidor Iniciado.");
+    }
 })
